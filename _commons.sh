@@ -36,6 +36,12 @@ function install_k8s {
     fi
     ansible-playbook -vvv -i ./inventory/hosts.ini $dest_folder/kubespray-$version/cluster.yml --become | tee setup-kubernetes.log
 
+    # Creation of temporal volumes
+    for vol in vol1 vol2 vol3; do
+        sudo mkdir /mnt/disks/$vol
+        sudo mount -t tmpfs -o size=5G $vol /mnt/disks/$vol
+    done
+
     # Configure environment
     mkdir -p "$HOME/.kube"
     cp ./inventory/artifacts/admin.conf "$HOME/.kube/config"

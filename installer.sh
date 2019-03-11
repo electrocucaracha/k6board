@@ -15,7 +15,6 @@ set -o nounset
 
 source _commons.sh
 
-
 # Configure SSH keys for ansible communication
 rm -f ~/.ssh/id_rsa*
 echo -e "\n\n\n" | ssh-keygen -t rsa -N ""

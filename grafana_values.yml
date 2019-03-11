@@ -23,9 +23,10 @@ datasources:
 adminUser: admin
 adminPassword: secret
 
-dashboards:
-  default:
-    influxdb-stats:
-      gnetId: 2587
-      revision: 3
-      datasource: InfluxDB
+# NOTE: Review this automated step
+#dashboards:
+#  default:
+#    influxdb-stats:
+#      gnetId: 2587
+#      revision: 3
+#      datasource: InfluxDB

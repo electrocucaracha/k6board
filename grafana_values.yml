@@ -1,0 +1,31 @@
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: 5Gi
+  storageClassName: local-storage
+
+service:                                                    
+  type: NodePort
+  nodePort: 30086
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: InfluxDB
+      type: influxdb
+      url:  http://metrics-db-influxdb.default.svc.cluster.local:8086
+      access: proxy
+      database: k6
+      isDefault: true
+
+adminUser: admin
+adminPassword: secret
+
+dashboards:
+  default:
+    influxdb-stats:
+      gnetId: 2587
+      revision: 3
+      datasource: InfluxDB

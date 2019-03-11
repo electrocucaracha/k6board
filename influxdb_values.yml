@@ -1,0 +1,18 @@
+setDefaultUser:
+  enabled: true
+  user:
+    username: "admin"
+    pasword: "secret"
+    privileges: "WITH ALL PRIVILEGES"
+
+env:
+  - name: INFLUXDB_DB
+    value: "k6"
+  - name: INFLUXDB_WRITE_USER
+    value: "k6"
+  - name: INFLUXDB_WRITE_USER_PASSWORD
+    value: "secret"
+  - name: INFLUXDB_READ_USER
+    value: "grafana"
+  - name: INFLUXDB_READ_USER_PASSWORD
+    value: "secret"

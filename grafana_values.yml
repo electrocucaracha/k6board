@@ -1,3 +1,4 @@
+
 persistence:
   enabled: true
   accessModes:
@@ -23,6 +24,19 @@ datasources:
 adminUser: admin
 adminPassword: secret
 
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/default
+
 # NOTE: Review this automated step
 #dashboards:
 #  default:
@@ -30,3 +44,425 @@ adminPassword: secret
 #      gnetId: 2587
 #      revision: 3
 #      datasource: InfluxDB
+
+dashboards:
+  default:
+    k6-dashboard:
+      json: |
+        {
+            "annotations": {
+                "list": [{
+                    "builtIn": 1,
+                    "datasource": "-- Grafana --",
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "type": "dashboard"
+                }]
+            },
+            "description": "",
+            "editable": true,
+            "gnetId": 2587,
+            "graphTooltip": 2,
+            "id": 1,
+            "links": [],
+            "panels": [{
+                    "collapsed": false,
+                    "gridPos": {
+                        "h": 1,
+                        "w": 24,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "id": 18,
+                    "panels": [],
+                    "repeat": null,
+                    "title": "Dashboard Row",
+                    "type": "row"
+                },
+                {
+                    "aliasColors": {},
+                    "bars": true,
+                    "dashLength": 10,
+                    "dashes": false,
+                    "datasource": "InfluxDB",
+                    "fill": 1,
+                    "gridPos": {
+                        "h": 10,
+                        "w": 24,
+                        "x": 0,
+                        "y": 1
+                    },
+                    "id": 17,
+                    "interval": "1s",
+                    "legend": {
+                        "alignAsTable": false,
+                        "avg": true,
+                        "current": false,
+                        "max": true,
+                        "min": true,
+                        "rightSide": false,
+                        "show": true,
+                        "total": false,
+                        "values": true
+                    },
+                    "lines": false,
+                    "linewidth": 1,
+                    "links": [],
+                    "nullPointMode": "null",
+                    "paceLength": 10,
+                    "percentage": false,
+                    "pointradius": 5,
+                    "points": false,
+                    "renderer": "flot",
+                    "seriesOverrides": [],
+                    "spaceLength": 10,
+                    "stack": false,
+                    "steppedLine": false,
+                    "targets": [{
+                        "alias": "Requests per Second",
+                        "dsType": "influxdb",
+                        "groupBy": [{
+                                "params": [
+                                    "$__interval"
+                                ],
+                                "type": "time"
+                            },
+                            {
+                                "params": [
+                                    "0"
+                                ],
+                                "type": "fill"
+                            }
+                        ],
+                        "measurement": "http_reqs",
+                        "orderByTime": "ASC",
+                        "policy": "default",
+                        "query": "SELECT sum(\"value\") FROM \"http_reqs\" WHERE $timeFilter GROUP BY time($__interval) fill(0)",
+                        "rawQuery": false,
+                        "refId": "A",
+                        "resultFormat": "time_series",
+                        "select": [
+                            [{
+                                    "params": [
+                                        "value"
+                                    ],
+                                    "type": "field"
+                                },
+                                {
+                                    "params": [],
+                                    "type": "sum"
+                                }
+                            ]
+                        ],
+                        "tags": []
+                    }],
+                    "thresholds": [],
+                    "timeFrom": null,
+                    "timeRegions": [],
+                    "timeShift": null,
+                    "title": "Requests per Second",
+                    "tooltip": {
+                        "shared": true,
+                        "sort": 0,
+                        "value_type": "individual"
+                    },
+                    "type": "graph",
+                    "xaxis": {
+                        "buckets": null,
+                        "mode": "time",
+                        "name": null,
+                        "show": true,
+                        "values": []
+                    },
+                    "yaxes": [{
+                            "format": "short",
+                            "label": null,
+                            "logBase": 1,
+                            "max": null,
+                            "min": null,
+                            "show": true
+                        },
+                        {
+                            "format": "short",
+                            "label": null,
+                            "logBase": 1,
+                            "max": null,
+                            "min": null,
+                            "show": true
+                        }
+                    ],
+                    "yaxis": {
+                        "align": false,
+                        "alignLevel": null
+                    }
+                },
+                {
+                    "aliasColors": {},
+                    "bars": false,
+                    "dashLength": 10,
+                    "dashes": false,
+                    "datasource": "InfluxDB",
+                    "description": "",
+                    "fill": 1,
+                    "gridPos": {
+                        "h": 10,
+                        "w": 24,
+                        "x": 0,
+                        "y": 11
+                    },
+                    "height": "250px",
+                    "id": 5,
+                    "interval": ">1s",
+                    "legend": {
+                        "alignAsTable": false,
+                        "avg": false,
+                        "current": false,
+                        "max": false,
+                        "min": false,
+                        "show": true,
+                        "total": false,
+                        "values": false
+                    },
+                    "lines": true,
+                    "linewidth": 1,
+                    "links": [],
+                    "nullPointMode": "null",
+                    "paceLength": 10,
+                    "percentage": false,
+                    "pointradius": 5,
+                    "points": false,
+                    "renderer": "flot",
+                    "seriesOverrides": [],
+                    "spaceLength": 10,
+                    "stack": false,
+                    "steppedLine": false,
+                    "targets": [{
+                            "alias": "max",
+                            "dsType": "influxdb",
+                            "groupBy": [{
+                                    "params": [
+                                        "$__interval"
+                                    ],
+                                    "type": "time"
+                                },
+                                {
+                                    "params": [
+                                        "0"
+                                    ],
+                                    "type": "fill"
+                                }
+                            ],
+                            "hide": true,
+                            "measurement": "http_req_duration",
+                            "orderByTime": "ASC",
+                            "policy": "default",
+                            "query": "SELECT max(\"value\") FROM \"http_req_duration\" WHERE $timeFilter GROUP BY time($__interval) fill(0)",
+                            "rawQuery": true,
+                            "refId": "C",
+                            "resultFormat": "time_series",
+                            "select": [
+                                [{
+                                        "params": [
+                                            "value"
+                                        ],
+                                        "type": "field"
+                                    },
+                                    {
+                                        "params": [],
+                                        "type": "max"
+                                    }
+                                ]
+                            ],
+                            "tags": []
+                        },
+                        {
+                            "alias": "p95",
+                            "dsType": "influxdb",
+                            "groupBy": [{
+                                    "params": [
+                                        "$__interval"
+                                    ],
+                                    "type": "time"
+                                },
+                                {
+                                    "params": [
+                                        "0"
+                                    ],
+                                    "type": "fill"
+                                }
+                            ],
+                            "hide": false,
+                            "measurement": "http_req_duration",
+                            "orderByTime": "ASC",
+                            "policy": "default",
+                            "query": "SELECT percentile(\"value\", 95) FROM \"http_req_duration\" WHERE $timeFilter GROUP BY time($__interval) fill(0)",
+                            "rawQuery": true,
+                            "refId": "D",
+                            "resultFormat": "time_series",
+                            "select": [
+                                [{
+                                        "params": [
+                                            "value"
+                                        ],
+                                        "type": "field"
+                                    },
+                                    {
+                                        "params": [
+                                            95
+                                        ],
+                                        "type": "percentile"
+                                    }
+                                ]
+                            ],
+                            "tags": []
+                        },
+                        {
+                            "alias": "p90",
+                            "dsType": "influxdb",
+                            "groupBy": [{
+                                    "params": [
+                                        "$__interval"
+                                    ],
+                                    "type": "time"
+                                },
+                                {
+                                    "params": [
+                                        "0"
+                                    ],
+                                    "type": "fill"
+                                }
+                            ],
+                            "hide": true,
+                            "measurement": "http_req_duration",
+                            "orderByTime": "ASC",
+                            "policy": "default",
+                            "query": "SELECT percentile(\"value\", 90) FROM \"http_req_duration\" WHERE $timeFilter GROUP BY time($__interval) fill(0)",
+                            "rawQuery": true,
+                            "refId": "A",
+                            "resultFormat": "time_series",
+                            "select": [
+                                [{
+                                        "params": [
+                                            "value"
+                                        ],
+                                        "type": "field"
+                                    },
+                                    {
+                                        "params": [
+                                            "90"
+                                        ],
+                                        "type": "percentile"
+                                    }
+                                ]
+                            ],
+                            "tags": []
+                        },
+                        {
+                            "alias": "min",
+                            "dsType": "influxdb",
+                            "groupBy": [{
+                                    "params": [
+                                        "$__interval"
+                                    ],
+                                    "type": "time"
+                                },
+                                {
+                                    "params": [
+                                        "0"
+                                    ],
+                                    "type": "fill"
+                                }
+                            ],
+                            "hide": true,
+                            "measurement": "http_req_duration",
+                            "orderByTime": "ASC",
+                            "policy": "default",
+                            "query": "SELECT min(\"value\") FROM \"http_req_duration\" WHERE $timeFilter GROUP BY time($__interval) fill(0)",
+                            "rawQuery": true,
+                            "refId": "E",
+                            "resultFormat": "time_series",
+                            "select": [
+                                [{
+                                        "params": [
+                                            "value"
+                                        ],
+                                        "type": "field"
+                                    },
+                                    {
+                                        "params": [],
+                                        "type": "min"
+                                    }
+                                ]
+                            ],
+                            "tags": []
+                        }
+                    ],
+                    "thresholds": [],
+                    "timeFrom": null,
+                    "timeRegions": [],
+                    "timeShift": null,
+                    "title": "Request duration",
+                    "tooltip": {
+                        "shared": true,
+                        "sort": 0,
+                        "value_type": "individual"
+                    },
+                    "type": "graph",
+                    "xaxis": {
+                        "buckets": null,
+                        "mode": "time",
+                        "name": null,
+                        "show": true,
+                        "values": []
+                    },
+                    "yaxes": [{
+                            "format": "ms",
+                            "label": null,
+                            "logBase": 1,
+                            "max": null,
+                            "min": null,
+                            "show": true
+                        },
+                        {
+                            "format": "short",
+                            "label": null,
+                            "logBase": 1,
+                            "max": null,
+                            "min": null,
+                            "show": true
+                        }
+                    ],
+                    "yaxis": {
+                        "align": false,
+                        "alignLevel": null
+                    }
+                }
+            ],
+            "refresh": "10s",
+            "schemaVersion": 18,
+            "style": "dark",
+            "tags": [],
+            "templating": {
+                "list": []
+            },
+            "time": {
+                "from": "now-5m",
+                "to": "now"
+            },
+            "timepicker": {
+                "refresh_intervals": [
+                    "5s",
+                    "10s"
+                ],
+                "time_options": [
+                    "5m",
+                    "15m"
+                ]
+            },
+            "timezone": "browser",
+            "title": "K6 Results",
+            "uid": "zEQRuwCik",
+            "version": 1
+        }

@@ -19,7 +19,7 @@ metadata:
   labels:
     app: nginx
 spec:
-  replicas: 50
+  replicas: 5
   selector:
     matchLabels:
       app: nginx
@@ -29,8 +29,8 @@ spec:
         app: nginx
     spec:
       containers:
-        - name: auctionweb
-          image: electrocucaracha/autionboard
+        - name: nginx
+          image: nginx:latest
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -42,8 +42,8 @@ data:
     import { check, sleep } from "k6";
 
     export let options = {
-      vus: 1000,
-      duration: "45s"
+      vus: 500,
+      duration: "4m"
     };
 
     export default function() {
@@ -60,7 +60,7 @@ kind: CronJob
 metadata:
   name: k6-cron
 spec:
-  schedule: "*/1 * * * *"
+  schedule: "*/5 * * * *"
   jobTemplate:
     spec:
       template:

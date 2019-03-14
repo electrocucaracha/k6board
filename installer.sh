@@ -32,4 +32,6 @@ sudo cp ./ansible.cfg /etc/ansible/ansible.cfg
 install_k8s
 install_dashboard
 
+sleep 60
+
 kubectl apply -f k6.yml

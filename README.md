@@ -10,6 +10,8 @@ This project pretends to increase the scope of its [documentation][4]
 covering the installation and integration of the Database and
 Dashboard using [Helm][5] charts.
 
+![Dashboard](img/dashboard.png)
+
 ## Virtual Machines
 
 This project uses [Vagrant tool][6] for provisioning Virtual Machines

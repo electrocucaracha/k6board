@@ -43,11 +43,12 @@ Vagrant.configure("2") do |config|
   config.vm.provider :libvirt do |v, override|
     override.vm.box =  box[:libvirt][:name]
     override.vm.box_version = box[:libvirt][:version]
-    v.memory = 8192
-    v.cpus = 4
+    v.memory = 32768
+    v.cpus = 16
     v.nested = true
     v.cpu_mode = 'host-passthrough'
     v.management_network_address = "192.168.121.0/27"
+    v.random_hostname = true
   end
 
   if ENV['http_proxy'] != nil and ENV['https_proxy'] != nil

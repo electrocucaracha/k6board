@@ -33,18 +33,21 @@ Vagrant.configure("2") do |config|
     SHELL
   end
 
+  [:virtualbox, :libvirt].each do |provider|
+  config.vm.provider provider do |p, override|
+      p.cpus = 4
+      p.memory = 8192
+    end
+  end
+
   config.vm.provider :virtualbox do |v, override|
     override.vm.box =  box[:virtualbox][:name]
     override.vm.box_version = box[:virtualbox][:version]
-    v.customize ["modifyvm", :id, "--memory", 8192]
-    v.customize ["modifyvm", :id, "--cpus", 4]
   end
 
   config.vm.provider :libvirt do |v, override|
     override.vm.box =  box[:libvirt][:name]
     override.vm.box_version = box[:libvirt][:version]
-    v.memory = 32768
-    v.cpus = 16
     v.nested = true
     v.cpu_mode = 'host-passthrough'
     v.management_network_address = "192.168.121.0/27"

@@ -26,6 +26,7 @@ end
 Vagrant.configure("2") do |config|
   config.vm.provider :libvirt
   config.vm.provider :virtualbox
+  config.vm.synced_folder '.', '/vagrant'
   config.vm.provision 'shell', privileged: false do |sh|
     sh.inline = <<-SHELL
       cd /vagrant/

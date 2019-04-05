@@ -25,7 +25,7 @@ its usage. This script supports two Virtualization technologies
 Once Vagrant is installed, it's possible to provision a cluster using
 the following instructions:
 
-    $ vagrant up && vagrant up
+    $ vagrant up
 
 ## License
 

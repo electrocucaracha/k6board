@@ -2,3 +2,4 @@
 .tox/
 *log
 inventory/group_vars/all.yml
+inventory/artifacts/

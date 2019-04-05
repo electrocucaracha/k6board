@@ -20,6 +20,7 @@ if ENV['no_proxy'] != nil or ENV['NO_PROXY']
   (1..31).each do |i|
     $no_proxy += ",#{$subnet}.#{i}"
   end
+  $no_proxy += ",10.0.2.15"
 end
 
 

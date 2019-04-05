@@ -50,7 +50,8 @@ Vagrant.configure("2") do |config|
     override.vm.box_version = box[:libvirt][:version]
     v.nested = true
     v.cpu_mode = 'host-passthrough'
-    v.management_network_address = "192.168.121.0/27"
+    v.management_network_address = "192.168.124.0/28"
+    v.management_network_name = "k6-mgmt-net"
     v.random_hostname = true
   end
 

@@ -15,17 +15,20 @@ set -o nounset
 # install_k8s() - Install Kubernetes using kubespray tool
 function install_k8s {
     echo "Deploying kubernetes"
-    local dest_folder=/opt
-    local version=2.8.3
-    local tarball=v$version.tar.gz
+    local kubespray_folder=/opt/kubespray
+    local version=2.10.0
 
-    sudo yum install -y wget
-    wget https://github.com/kubernetes-sigs/kubespray/archive/$tarball
-    sudo tar -C $dest_folder -xzf $tarball
-    sudo chown -R "$USER" $dest_folder/kubespray-$version
-    rm $tarball
+    # shellcheck disable=SC1091
+    source /etc/os-release || source /usr/lib/os-release
+    case ${ID,,} in
+        rhel|centos|fedora)
+            sudo yum install -y git
+        ;;
+    esac
+    sudo git clone --depth 1 https://github.com/kubernetes-sigs/kubespray $kubespray_folder -b v$version
+    sudo chown -R "$USER" $kubespray_folder
+    sudo -E pip install -r $kubespray_folder/requirements.txt
 
-    sudo -E pip install -r $dest_folder/kubespray-$version/requirements.txt
     rm -f ./inventory/group_vars/all.yml 2> /dev/null
     echo "kubeadm_enabled: true" | tee ./inventory/group_vars/all.yml
     if [[ ${HTTP_PROXY+x} = "x" ]]; then
@@ -34,7 +37,13 @@ function install_k8s {
     if [[ ${HTTPS_PROXY+x} = "x" ]]; then
         echo "https_proxy: \"$HTTPS_PROXY\"" | tee --append ./inventory/group_vars/all.yml
     fi
-    ansible-playbook -vvv -i ./inventory/hosts.ini $dest_folder/kubespray-$version/cluster.yml --become | tee setup-kubernetes.log
+    if [[ ${NO_PROXY+x} = "x" ]]; then
+        echo "no_proxy: \"$NO_PROXY\"" | tee --append ./inventory/group_vars/all.yml
+    fi
+
+    # TODO: https://github.com/kubernetes-sigs/kubespray/pull/4780
+    export ANSIBLE_INVALID_TASK_ATTRIBUTE_FAILED=False
+    ansible-playbook -vvv -i ./inventory/hosts.ini $kubespray_folder/cluster.yml --become | tee setup-kubernetes.log
 
     # Creation of temporal volumes
     for vol in vol1 vol2 vol3; do
@@ -44,12 +53,13 @@ function install_k8s {
 
     # Configure environment
     mkdir -p "$HOME/.kube"
-    cp ./inventory/artifacts/admin.conf "$HOME/.kube/config"
+    sudo cp /etc/kubernetes/admin.conf "$HOME/.kube/config"
+    sudo chown vagrant "$HOME/.kube/config"
 }
 
 # install_dashboard() - Function that installs Helms, InfluxDB and Grafana Dashboard
 function install_dashboard {
-    local helm_version=v2.11.0
+    local helm_version=v2.13.1
     local helm_tarball=helm-${helm_version}-linux-amd64.tar.gz
 
     if ! command -v helm; then

@@ -13,25 +13,11 @@ set -o xtrace
 set -o errexit
 set -o nounset
 
-source _commons.sh
+KRD_ACTIONS=("install_k8s" "install_helm")
+export KRD_ACTIONS_DECLARE=$(declare -p KRD_ACTIONS)
+export KRD_DEBUG=true
+curl -fsSL https://raw.githubusercontent.com/electrocucaracha/krd/master/aio.sh | KRD_ACTIONS=$(declare -p actions) bash
 
-# Configure SSH keys for ansible communication
-rm -f ~/.ssh/id_rsa*
-echo -e "\n\n\n" | ssh-keygen -t rsa -N ""
-cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-chmod og-wx ~/.ssh/authorized_keys
-
-# Install dependencies
-sudo swapoff -a
-curl -sL https://bootstrap.pypa.io/get-pip.py | sudo python
-sudo -E pip install ansible
-sudo mkdir -p /etc/ansible/
-sudo cp ./ansible.cfg /etc/ansible/ansible.cfg
-
-# Kubernetes installation
-install_k8s
-install_dashboard
-
-sleep 60
-
+helm install stable/influxdb --name metrics-db -f influxdb_values.yml
+helm install stable/grafana --name metrics-dashboard -f grafana_values.yml
 kubectl apply -f k6.yml

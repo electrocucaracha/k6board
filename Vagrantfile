@@ -15,10 +15,9 @@ box = {
 
 if ENV['no_proxy'] != nil or ENV['NO_PROXY']
   $no_proxy = ENV['NO_PROXY'] || ENV['no_proxy'] || "127.0.0.1,localhost"
-  $subnet = "192.168.121"
-  # NOTE: This range is based on vagrant-libvirt network definition CIDR 192.168.121.0/27
-  (1..31).each do |i|
-    $no_proxy += ",#{$subnet}.#{i}"
+  # NOTE: This range is based on k6-mgmt-net network definition CIDR 192.168.124.0/30
+  (1..4).each do |i|
+    $no_proxy += ",192.168.124.#{i}"
   end
   $no_proxy += ",10.0.2.15"
 end
@@ -52,7 +51,7 @@ Vagrant.configure("2") do |config|
     override.vm.box_version = box[:libvirt][:version]
     v.nested = true
     v.cpu_mode = 'host-passthrough'
-    v.management_network_address = "192.168.124.0/28"
+    v.management_network_address = "192.168.124.0/30"
     v.management_network_name = "k6-mgmt-net"
     v.random_hostname = true
   end

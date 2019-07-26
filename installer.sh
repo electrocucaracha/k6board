@@ -14,9 +14,10 @@ set -o errexit
 set -o nounset
 
 KRD_ACTIONS=("install_k8s" "install_helm")
-export KRD_ACTIONS_DECLARE=$(declare -p KRD_ACTIONS)
+KRD_ACTIONS_DECLARE=$(declare -p KRD_ACTIONS)
+export KRD_ACTIONS_DECLARE
 export KRD_DEBUG=true
-curl -fsSL https://raw.githubusercontent.com/electrocucaracha/krd/master/aio.sh | KRD_ACTIONS=$(declare -p actions) bash
+curl -fsSL https://raw.githubusercontent.com/electrocucaracha/krd/master/aio.sh | bash
 
 helm install stable/influxdb --name metrics-db -f influxdb_values.yml
 helm install stable/grafana --name metrics-dashboard -f grafana_values.yml

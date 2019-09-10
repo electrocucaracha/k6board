@@ -8,29 +8,21 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-box = {
-  :virtualbox => { :name => 'generic/centos7', :version=> '1.9.2' },
-  :libvirt => { :name => 'centos/7', :version=> '1901.01' }
-}
-
-if ENV['no_proxy'] != nil or ENV['NO_PROXY']
-  $no_proxy = ENV['NO_PROXY'] || ENV['no_proxy'] || "127.0.0.1,localhost"
-  # NOTE: This range is based on k6-mgmt-net network definition CIDR 192.168.124.0/30
-  (1..4).each do |i|
-    $no_proxy += ",192.168.124.#{i}"
-  end
-  $no_proxy += ",10.0.2.15"
+$no_proxy = ENV['NO_PROXY'] || ENV['no_proxy'] || "127.0.0.1,localhost"
+# NOTE: This range is based on vagrant-libvirt network definition CIDR 192.168.121.0/24
+(1..254).each do |i|
+  $no_proxy += ",192.168.121.#{i}"
 end
-
+$no_proxy += ",10.0.2.15"
 
 Vagrant.configure("2") do |config|
   config.vm.provider :libvirt
   config.vm.provider :virtualbox
-  config.vm.synced_folder '.', '/vagrant'
+  config.vm.box = "centos/7"
   config.vm.provision 'shell', privileged: false do |sh|
     sh.inline = <<-SHELL
       cd /vagrant/
-      ./installer.sh | tee krd_installer.log
+      ./installer.sh | tee installer.log
     SHELL
   end
 
@@ -41,19 +33,10 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  config.vm.provider :virtualbox do |v, override|
-    override.vm.box =  box[:virtualbox][:name]
-    override.vm.box_version = box[:virtualbox][:version]
-  end
-
   config.vm.provider :libvirt do |v, override|
-    override.vm.box =  box[:libvirt][:name]
-    override.vm.box_version = box[:libvirt][:version]
-    v.nested = true
     v.cpu_mode = 'host-passthrough'
-    v.management_network_address = "192.168.124.0/30"
-    v.management_network_name = "k6-mgmt-net"
     v.random_hostname = true
+    v.management_network_address = "192.168.121.0/24"
   end
 
   if ENV['http_proxy'] != nil and ENV['https_proxy'] != nil

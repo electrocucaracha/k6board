@@ -107,7 +107,7 @@ data:
     import { check, sleep } from "k6";
 
     export let options = {
-      vus: 1000,
+      vus: 50,
       duration: "4m"
     };
 
@@ -117,7 +117,6 @@ data:
         "status was 200": (r) => r.status == 200,
         "transaction time OK": (r) => r.timings.duration < 200
       });
-      sleep(1);
     };
 ---
 apiVersion: batch/v1beta1

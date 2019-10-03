@@ -44,7 +44,7 @@ following resources defined in the [k6.yml](k6.yml) file:
 Given the Grafana's port is forwarded to the host machine it's
 possible to access the dashboard using the following URL:
 
-    http://localhost:30086/d/zEQRuwCik/k6-results
+    http://localhost:30086/d/1/k6-results
 
 > Note: The Grafana's username is `admin` and its password is `secret`
 

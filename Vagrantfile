@@ -47,4 +47,5 @@ Vagrant.configure("2") do |config|
       config.proxy.enabled = { docker: false }
     end
   end
+  config.vm.network :forwarded_port, guest: 30086, host: 30086
 end

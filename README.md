@@ -1,5 +1,6 @@
 # K6 Grafana Dashboard
 [![Build Status](https://travis-ci.org/electrocucaracha/k6board.png)](https://travis-ci.org/electrocucaracha/k6board)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## Summary
 
@@ -21,7 +22,7 @@ of the [bootstrap-vagrant project][7] for installing Vagrant
 dependencies and plugins required for its project. The script
 supports two Virtualization providers (Libvirt and VirtualBox).
 
-    $ curl -fsSL https://raw.githubusercontent.com/electrocucaracha/bootstrap-vagrant/master/setup.sh | PROVIDER=libvirt bash
+    $ curl -fsSL http://bit.ly/initVagrant | PROVIDER=libvirt bash
 
 Once Vagrant is installed, it's possible to provision a cluster using
 the following instructions:
@@ -29,13 +30,12 @@ the following instructions:
     $ vagrant up
 
 This process will take some time to provision a Kubernetes Cluster and
-install Helm services on it. This provisioning process is done through
-the [KRD project][8]. Lastly, the `kubectl` command will create the
+install Helm services on it. Lastly, the `kubectl` command will create the
 following resources defined in the [k6.yml](k6.yml) file:
 
 | Name         | Kind       | Description                              |
 |--------------|------------|------------------------------------------|
-| envoy-config | ConfigMap  | [Envoy's configuration values][9]        |
+| envoy-config | ConfigMap  | [Envoy's configuration values][8]        |
 | nginx        | Service    | An access point for the NGINX deployment |
 | nginx        | Deployment | Deployment to be measured by k6 tools    |
 | k6-config    | ConfigMap  | [k6's configuration values][1]           |
@@ -48,10 +48,6 @@ possible to access the dashboard using the following URL:
 
 > Note: The Grafana's username is `admin` and its password is `secret`
 
-## License
-
-Apache-2.0
-
 [1]: https://k6.io/
 [2]: https://www.influxdata.com/
 [3]: https://grafana.com/
@@ -59,5 +55,4 @@ Apache-2.0
 [5]: https://helm.sh/
 [6]: https://www.vagrantup.com/
 [7]: https://github.com/electrocucaracha/bootstrap-vagrant
-[8]: https://github.com/electrocucaracha/krd
-[9]: https://www.envoyproxy.io/docs/envoy/latest/start/start#simple-configuration
+[8]: https://www.envoyproxy.io/docs/envoy/latest/start/start#simple-configuration

@@ -13,13 +13,25 @@ set -o xtrace
 set -o errexit
 set -o nounset
 
-echo "Install Kubernetes"
-KRD_ACTIONS=("install_k8s" "install_helm")
-curl -fsSL https://raw.githubusercontent.com/electrocucaracha/krd/master/aio.sh | KRD_ACTIONS_DECLARE=$(declare -p KRD_ACTIONS) bash
+# Install dependencies
+pkgs=""
+for pkg in docker kind kubectl helm; do
+    if ! command -v "$pkg"; then
+        pkgs+=" $pkg"
+    fi
+done
+if [ -n "$pkgs" ]; then
+    curl -fsSL http://bit.ly/install_pkg | PKG=$pkgs bash
+fi
+newgrp docker <<EONG
+kind create cluster --config=./kind-config.yml
+EONG
+helm repo add stable https://kubernetes-charts.storage.googleapis.com
+helm repo update
 
 echo "Install infrastructure (Grafana and InfluxDB)"
-helm install stable/influxdb --name metrics-db -f influxdb_values.yml
-helm install stable/grafana --name metrics-dashboard -f grafana_values.yml
+helm install metrics-db stable/influxdb -f influxdb_values.yml
+helm install metrics-dashboard stable/grafana -f grafana_values.yml
 
 echo "Create Kubernetes resources"
 kubectl apply -f k6.yml

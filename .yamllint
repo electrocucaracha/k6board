@@ -8,24 +8,10 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-setDefaultUser:
-  enabled: true
-  user:
-    username: "admin"
-    pasword: "secret"
-    privileges: "WITH ALL PRIVILEGES"
+extends: default
 
-env:
-  - name: INFLUXDB_DB
-    value: "k6"
-  - name: INFLUXDB_WRITE_USER
-    value: "k6"
-  - name: INFLUXDB_WRITE_USER_PASSWORD
-    value: "secret"
-  - name: INFLUXDB_READ_USER
-    value: "grafana"
-  - name: INFLUXDB_READ_USER_PASSWORD
-    value: "secret"
+ignore: |
+  deployment.yaml
 
-persistence:
-  enabled: false
+rules:
+  line-length: disable

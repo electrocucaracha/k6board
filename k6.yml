@@ -77,13 +77,13 @@ spec:
     spec:
       containers:
         - name: website
-          image: nginx:latest
+          image: nginx:1.19.0
           resources:
             limits:
               cpu: .1
               memory: 256Mi
         - name: sidecar
-          image: envoyproxy/envoy:latest
+          image: envoyproxy/envoy:v1.14.1
           resources:
             limits:
               cpu: .1

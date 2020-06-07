@@ -18,11 +18,12 @@ $no_proxy += ",10.0.2.15"
 Vagrant.configure("2") do |config|
   config.vm.provider :libvirt
   config.vm.provider :virtualbox
-  config.vm.box = "centos/7"
+  config.vm.box = "generic/centos7"
+  config.vm.synced_folder './', '/vagrant'
   config.vm.provision 'shell', privileged: false do |sh|
     sh.inline = <<-SHELL
       cd /vagrant/
-      ./installer.sh | tee installer.log
+      ./installer.sh | tee ~/installer.log
     SHELL
   end
 

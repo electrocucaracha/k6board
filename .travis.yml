@@ -8,16 +8,23 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-matrix:
+language: python
+os: linux
+git:
+  depth: 1
+dist: bionic
+jobs:
   include:
-    - language: python
+    - name: Lint validation
       install:
         - pip install tox
       script:
-        - tox
-      env:
-        - TOXENV=lint
-
-    - language: shell
+        - tox -e lint
+        - bash -c 'shopt -s globstar; shellcheck -x *.sh'
+    - name: CentOS 7 validation
+      install:
+        - sudo apt update
+        - sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 --no-install-recommends curl qemu
+        - curl -fsSL http://bit.ly/initVagrant | PROVIDER=libvirt bash
       script:
-        - bash -c 'shopt -s globstar; shellcheck **/*.sh'
+        - MEMORY=6144 sudo -E vagrant up centos_7

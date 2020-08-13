@@ -15,27 +15,49 @@ $no_proxy = ENV['NO_PROXY'] || ENV['no_proxy'] || "127.0.0.1,localhost"
 end
 $no_proxy += ",10.0.2.15"
 
+File.exists?("/usr/share/qemu/OVMF.fd") ? loader = "/usr/share/qemu/OVMF.fd" : loader = File.join(File.dirname(__FILE__), "OVMF.fd")
+if not File.exists?(loader)
+  system('curl -O https://download.clearlinux.org/image/OVMF.fd')
+end
+
+distros = YAML.load_file(File.dirname(__FILE__) + '/distros_supported.yml')
+
 Vagrant.configure("2") do |config|
   config.vm.provider :libvirt
   config.vm.provider :virtualbox
-  config.vm.box = "generic/centos7"
-  config.vm.synced_folder './', '/vagrant'
-  config.vm.provision 'shell', privileged: false do |sh|
-    sh.inline = <<-SHELL
-      cd /vagrant/
-      ./installer.sh | tee ~/installer.log
-    SHELL
-  end
 
-  [:virtualbox, :libvirt].each do |provider|
-  config.vm.provider provider do |p, override|
-      p.cpus = 4
-      p.memory = 8192
+  config.vm.synced_folder './', '/vagrant', type: "rsync",
+    rsync__args: ["--verbose", "--archive", "--delete", "-z"]
+  distros["linux"].each do |distro|
+    config.vm.define distro["alias"] do |node|
+      node.vm.box = distro["name"]
+      node.vm.box_check_update = false
+      if distro["alias"] == "clearlinux"
+        node.vm.provider 'libvirt' do |v|
+          v.loader = loader
+        end
+      end
     end
   end
 
-  config.vm.provider :libvirt do |v, override|
-    v.cpu_mode = 'host-passthrough'
+  config.vm.provision 'shell', privileged: false, inline: <<-SHELL
+    set -o errexit
+    cd /vagrant/
+    ./installer.sh | tee ~/installer.log
+  SHELL
+
+  [:virtualbox, :libvirt].each do |provider|
+  config.vm.provider provider do |p|
+      p.cpus = 1
+      p.memory = ENV['MEMORY'] || 1024
+    end
+  end
+
+  config.vm.provider "virtualbox" do |v|
+    v.gui = false
+  end
+
+  config.vm.provider :libvirt do |v|
     v.random_hostname = true
     v.management_network_address = "192.168.121.0/24"
   end

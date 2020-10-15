@@ -15,30 +15,13 @@ $no_proxy = ENV['NO_PROXY'] || ENV['no_proxy'] || "127.0.0.1,localhost"
 end
 $no_proxy += ",10.0.2.15"
 
-File.exists?("/usr/share/qemu/OVMF.fd") ? loader = "/usr/share/qemu/OVMF.fd" : loader = File.join(File.dirname(__FILE__), "OVMF.fd")
-if not File.exists?(loader)
-  system('curl -O https://download.clearlinux.org/image/OVMF.fd')
-end
-
-distros = YAML.load_file(File.dirname(__FILE__) + '/distros_supported.yml')
-
 Vagrant.configure("2") do |config|
   config.vm.provider :libvirt
   config.vm.provider :virtualbox
 
-  config.vm.synced_folder './', '/vagrant', type: "rsync",
-    rsync__args: ["--verbose", "--archive", "--delete", "-z"]
-  distros["linux"].each do |distro|
-    config.vm.define distro["alias"] do |node|
-      node.vm.box = distro["name"]
-      node.vm.box_check_update = false
-      if distro["alias"] == "clearlinux"
-        node.vm.provider 'libvirt' do |v|
-          v.loader = loader
-        end
-      end
-    end
-  end
+  config.vm.box = "generic/centos7"
+  config.vm.box_check_update = false
+  config.vm.synced_folder './', '/vagrant'
 
   config.vm.provision 'shell', privileged: false, inline: <<-SHELL
     set -o errexit
@@ -48,8 +31,8 @@ Vagrant.configure("2") do |config|
 
   [:virtualbox, :libvirt].each do |provider|
   config.vm.provider provider do |p|
-      p.cpus = 1
-      p.memory = ENV['MEMORY'] || 1024
+      p.cpus = 2
+      p.memory = ENV['MEMORY'] || 6144
     end
   end
 

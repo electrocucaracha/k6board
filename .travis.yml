@@ -21,10 +21,13 @@ jobs:
       script:
         - tox -e lint
         - bash -c 'shopt -s globstar; shellcheck -x *.sh'
-    - name: CentOS 7 validation
+    - name: CentOS 7 Vagrant validation
       install:
         - sudo apt update
         - sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 --no-install-recommends curl qemu
         - curl -fsSL http://bit.ly/initVagrant | PROVIDER=libvirt bash
       script:
-        - MEMORY=6144 sudo -E vagrant up centos_7
+        - sudo -E vagrant up
+    - name: Ubuntu 18.04 LTS Bare Metal validation
+      script:
+        - ./installer.sh
